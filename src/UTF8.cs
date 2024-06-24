@@ -3,7 +3,6 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace SimdUnicode
 {
@@ -422,10 +421,10 @@ namespace SimdUnicode
                 int asciirun = 0;
                 for (; asciirun + 64 <= inputLength; asciirun += 64)
                 {
-                    Vector128<byte> block1 = Sse2.LoadVector128(pInputBuffer + asciirun);
-                    Vector128<byte> block2 = Sse2.LoadVector128(pInputBuffer + asciirun + 16);
-                    Vector128<byte> block3 = Sse2.LoadVector128(pInputBuffer + asciirun + 32);
-                    Vector128<byte> block4 = Sse2.LoadVector128(pInputBuffer + asciirun + 48);
+                    Vector128<byte> block1 = Vector128.Load(pInputBuffer + asciirun);
+                    Vector128<byte> block2 = Vector128.Load(pInputBuffer + asciirun + 16);
+                    Vector128<byte> block3 = Vector128.Load(pInputBuffer + asciirun + 32);
+                    Vector128<byte> block4 = Vector128.Load(pInputBuffer + asciirun + 48);
 
                     Vector128<byte> or = Sse2.Or(Sse2.Or(block1, block2), Sse2.Or(block3, block4));
                     if (Sse2.MoveMask(or) != 0)
@@ -522,7 +521,7 @@ namespace SimdUnicode
                     for (; processedLength + 16 <= inputLength; processedLength += 16)
                     {
 
-                        Vector128<byte> currentBlock = Sse2.LoadVector128(pInputBuffer + processedLength);
+                        Vector128<byte> currentBlock = Vector128.Load(pInputBuffer + processedLength);
                         int mask = Sse42.MoveMask(currentBlock);
                         if (mask == 0)
                         {
@@ -555,10 +554,10 @@ namespace SimdUnicode
                             {
                                 for (; processedLength + localasciirun + 64 <= inputLength; localasciirun += 64)
                                 {
-                                    Vector128<byte> block1 = Sse2.LoadVector128(pInputBuffer + processedLength + localasciirun);
-                                    Vector128<byte> block2 = Sse2.LoadVector128(pInputBuffer + processedLength + localasciirun + 16);
-                                    Vector128<byte> block3 = Sse2.LoadVector128(pInputBuffer + processedLength + localasciirun + 32);
-                                    Vector128<byte> block4 = Sse2.LoadVector128(pInputBuffer + processedLength + localasciirun + 48);
+                                    Vector128<byte> block1 = Vector128.Load(pInputBuffer + processedLength + localasciirun);
+                                    Vector128<byte> block2 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 16);
+                                    Vector128<byte> block3 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 32);
+                                    Vector128<byte> block4 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 48);
 
                                     Vector128<byte> or = Sse2.Or(Sse2.Or(block1, block2), Sse2.Or(block3, block4));
                                     if (Sse2.MoveMask(or) != 0)
@@ -679,8 +678,8 @@ namespace SimdUnicode
                 int asciirun = 0;
                 for (; asciirun + 64 <= inputLength; asciirun += 64)
                 {
-                    Vector256<byte> block1 = Avx.LoadVector256(pInputBuffer + asciirun);
-                    Vector256<byte> block2 = Avx.LoadVector256(pInputBuffer + asciirun + 32);
+                    Vector256<byte> block1 = Vector256.Load(pInputBuffer + asciirun);
+                    Vector256<byte> block2 = Vector256.Load(pInputBuffer + asciirun + 32);
                     Vector256<byte> or = Avx2.Or(block1, block2);
                     if (Avx2.MoveMask(or) != 0)
                     {
@@ -805,7 +804,7 @@ namespace SimdUnicode
                     for (; processedLength + 32 <= inputLength; processedLength += 32)
                     {
 
-                        Vector256<byte> currentBlock = Avx.LoadVector256(pInputBuffer + processedLength);
+                        Vector256<byte> currentBlock = Vector256.Load(pInputBuffer + processedLength);
                         int mask = Avx2.MoveMask(currentBlock);
                         if (mask == 0)
                         {
@@ -836,8 +835,8 @@ namespace SimdUnicode
                             {
                                 for (; processedLength + localasciirun + 64 <= inputLength; localasciirun += 64)
                                 {
-                                    Vector256<byte> block1 = Avx.LoadVector256(pInputBuffer + processedLength + localasciirun);
-                                    Vector256<byte> block2 = Avx.LoadVector256(pInputBuffer + processedLength + localasciirun + 32);
+                                    Vector256<byte> block1 = Vector256.Load(pInputBuffer + processedLength + localasciirun);
+                                    Vector256<byte> block2 = Vector256.Load(pInputBuffer + processedLength + localasciirun + 32);
                                     Vector256<byte> or = Avx2.Or(block1, block2);
                                     if (Avx2.MoveMask(or) != 0)
                                     {
@@ -956,8 +955,8 @@ namespace SimdUnicode
                 int asciirun = 0;
                 for (; asciirun + 64 <= inputLength; asciirun += 64)
                 {
-                    Vector256<byte> block1 = Avx.LoadVector256(pInputBuffer + asciirun);
-                    Vector256<byte> block2 = Avx.LoadVector256(pInputBuffer + asciirun + 32);
+                    Vector256<byte> block1 = Vector256.Load(pInputBuffer + asciirun);
+                    Vector256<byte> block2 = Vector256.Load(pInputBuffer + asciirun + 32);
                     Vector256<byte> or = Avx2.Or(block1, block2);
                     if (Avx2.MoveMask(or) != 0)
                     {
@@ -1147,7 +1146,7 @@ namespace SimdUnicode
                     for (; processedLength + 64 <= inputLength; processedLength += 64)
                     {
 
-                        Vector512<byte> currentBlock = Avx512F.LoadVector512(pInputBuffer + processedLength);
+                        Vector512<byte> currentBlock = Vector512.Load(pInputBuffer + processedLength);
                         ulong mask = currentBlock.ExtractMostSignificantBits();
                         if (mask == 0)
                         {
@@ -1178,7 +1177,7 @@ namespace SimdUnicode
                             {
                                 for (; processedLength + localasciirun + 64 <= inputLength; localasciirun += 64)
                                 {
-                                    Vector512<byte> block = Avx512F.LoadVector512(pInputBuffer + processedLength + localasciirun);
+                                    Vector512<byte> block = Vector512.Load(pInputBuffer + processedLength + localasciirun);
                                     if (block.ExtractMostSignificantBits() != 0)
                                     {
                                         break;
@@ -1293,10 +1292,10 @@ namespace SimdUnicode
                 int asciirun = 0;
                 for (; asciirun + 64 <= inputLength; asciirun += 64)
                 {
-                    Vector128<byte> block1 = AdvSimd.LoadVector128(pInputBuffer + asciirun);
-                    Vector128<byte> block2 = AdvSimd.LoadVector128(pInputBuffer + asciirun + 16);
-                    Vector128<byte> block3 = AdvSimd.LoadVector128(pInputBuffer + asciirun + 32);
-                    Vector128<byte> block4 = AdvSimd.LoadVector128(pInputBuffer + asciirun + 48);
+                    Vector128<byte> block1 = Vector128.Load(pInputBuffer + asciirun);
+                    Vector128<byte> block2 = Vector128.Load(pInputBuffer + asciirun + 16);
+                    Vector128<byte> block3 = Vector128.Load(pInputBuffer + asciirun + 32);
+                    Vector128<byte> block4 = Vector128.Load(pInputBuffer + asciirun + 48);
                     Vector128<byte> or = AdvSimd.Or(AdvSimd.Or(block1, block2), AdvSimd.Or(block3, block4));
                     if (AdvSimd.Arm64.MaxAcross(or).ToScalar() > 127)
                     {
@@ -1361,7 +1360,7 @@ namespace SimdUnicode
                     for (; processedLength + 16 <= inputLength; processedLength += 16)
                     {
 
-                        Vector128<byte> currentBlock = AdvSimd.LoadVector128(pInputBuffer + processedLength);
+                        Vector128<byte> currentBlock = Vector128.Load(pInputBuffer + processedLength);
                         if (AdvSimd.Arm64.MaxAcross(Vector128.AsUInt32(AdvSimd.And(currentBlock, v80))).ToScalar() == 0)
                         // We could it with (AdvSimd.Arm64.MaxAcross(currentBlock).ToScalar() <= 127) but it is slower on some
                         // hardware.
@@ -1392,10 +1391,10 @@ namespace SimdUnicode
                             {
                                 for (; processedLength + localasciirun + 64 <= inputLength; localasciirun += 64)
                                 {
-                                    Vector128<byte> block1 = AdvSimd.LoadVector128(pInputBuffer + processedLength + localasciirun);
-                                    Vector128<byte> block2 = AdvSimd.LoadVector128(pInputBuffer + processedLength + localasciirun + 16);
-                                    Vector128<byte> block3 = AdvSimd.LoadVector128(pInputBuffer + processedLength + localasciirun + 32);
-                                    Vector128<byte> block4 = AdvSimd.LoadVector128(pInputBuffer + processedLength + localasciirun + 48);
+                                    Vector128<byte> block1 = Vector128.Load(pInputBuffer + processedLength + localasciirun);
+                                    Vector128<byte> block2 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 16);
+                                    Vector128<byte> block3 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 32);
+                                    Vector128<byte> block4 = Vector128.Load(pInputBuffer + processedLength + localasciirun + 48);
                                     Vector128<byte> or = AdvSimd.Or(AdvSimd.Or(block1, block2), AdvSimd.Or(block3, block4));
                                     if (AdvSimd.Arm64.MaxAcross(or).ToScalar() > 127)
                                     {

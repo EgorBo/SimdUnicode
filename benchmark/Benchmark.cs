@@ -1,29 +1,17 @@
-﻿using System;
-using SimdUnicode;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Jobs;
-using System.Text;
-using System.Runtime;
 using System.Runtime.InteropServices;
-using System.Buffers;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using BenchmarkDotNet.Columns;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.CompilerServices;
 
 
 namespace SimdUnicodeBenchmarks
 {
-
-
     public class Speed : IColumn
     {
         public string GetValue(Summary summary, BenchmarkCase benchmarkCase)
@@ -126,9 +114,6 @@ namespace SimdUnicodeBenchmarks
         // Parameters and variables for real data
         [Params(@"data/twitter.json",
                 @"data/Bogatov1069.utf8.txt",
-                @"data/Bogatov136.utf8.txt",
-                @"data/Bogatov286.utf8.txt",
-                @"data/Bogatov527.utf8.txt",
                 @"data/Arabic-Lipsum.utf8.txt",
                 @"data/Hebrew-Lipsum.utf8.txt",
                 @"data/Korean-Lipsum.utf8.txt",
@@ -302,13 +287,14 @@ namespace SimdUnicodeBenchmarks
             }
         }
     }
+
     public class Program
     {
         static void Main(string[] args)
         {
             if (args.Length == 0)
             {
-                args = new string[] { "--filter", "*" };
+                args = ["--filter", "*"];
             }
             var job = Job.Default
                 .WithWarmupCount(1)
@@ -319,8 +305,4 @@ namespace SimdUnicodeBenchmarks
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, DefaultConfig.Instance.AddJob(job).WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100)));
         }
     }
-
-
-    //  }
-
 }
